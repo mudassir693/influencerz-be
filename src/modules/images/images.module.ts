@@ -4,6 +4,7 @@ import { ImagesController } from "./images.controller";
 
 import { diskStorage } from "multer";
 import { extname } from "path";
+import { ImageService } from "./images.service";
 
 @Module({
     // imports:[MulterModule.register({
@@ -18,6 +19,7 @@ import { extname } from "path";
     //       },
     //     })
     //   })],
-    controllers:[ImagesController]
+    controllers:[ImagesController],
+    providers:[ImageService]
 })
 export class ImagesModule {}

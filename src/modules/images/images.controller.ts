@@ -4,10 +4,11 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { Multer } from "multer";
 import * as fs from 'fs';
 import * as path from 'path';
+import { ImageService } from "./images.service";
 
 @Controller('/images')
 export class ImagesController {
-    constructor(private _configService: ConfigService){}
+    constructor(private _configService: ConfigService, private _imageService: ImageService){}
 
     @Post('/')
     @UseInterceptors(FileInterceptor('image'))
@@ -28,18 +29,7 @@ export class ImagesController {
                   throw new HttpException(error, HttpStatus.BAD_REQUEST);
                 },
               }),
-    ) file: Express.Multer.File): string{
-        const filePath = path.join('images', file.originalname);
-        new Promise((resolve, reject)=>{
-            fs.writeFile(filePath, file.buffer, (error) => {
-                if (error) {
-                  reject(error);
-                } else {
-                  resolve('');
-                }
-              });
-        })
-
-        return this._configService.get('PORT')
+    ) file: Express.Multer.File): {Success: boolean}{
+        return this._imageService.uploadFile(file)
     }
 }
