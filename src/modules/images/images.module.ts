@@ -1,10 +1,7 @@
 import { Module } from "@nestjs/common";
-import {MulterModule} from '@nestjs/platform-express'
 import { ImagesController } from "./images.controller";
-
-import { diskStorage } from "multer";
-import { extname } from "path";
 import { ImageService } from "./images.service";
+import { DatabaseModule } from "src/database/database.module";
 
 @Module({
     // imports:[MulterModule.register({
@@ -19,6 +16,7 @@ import { ImageService } from "./images.service";
     //       },
     //     })
     //   })],
+    imports: [DatabaseModule],
     controllers:[ImagesController],
     providers:[ImageService]
 })

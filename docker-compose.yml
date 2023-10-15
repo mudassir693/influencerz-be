@@ -1,0 +1,29 @@
+version: '3.3'
+services:
+    influenzerz.images.db:
+        image: 'mdillon/postgis:10-alpine'
+        container_name: influenzerz-images.db
+        ports:
+            - 5434:5432
+        # networks:
+        #     - swiftsales
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASS=click123
+            - POSTGRES_DB=influenzerz
+        # volumes:
+        #     - 'swift_crm_postgres_data:/var/lib/postgresql'
+    # rabbitmq:
+    #     image: rabbitmq:3.10-rc-management-alpine
+    #     ports:
+    #     # AMQP protocol port
+    #     - "5672:5672"
+    #     # HTTP management UI
+    #     - "15672:15672"
+
+# volumes:
+#     swift_crm_postgres_data:
+#         external: true
+# networks:
+#     swiftsales:
+#         external: true
