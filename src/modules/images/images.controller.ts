@@ -29,10 +29,7 @@ export class ImagesController {
                 },
               }),
     ) file: Express.Multer.File): string{
-        console.log('file: ', file)
-
         const filePath = path.join('images', file.originalname);
-        console.log('filePath: ',filePath)
         new Promise((resolve, reject)=>{
             fs.writeFile(filePath, file.buffer, (error) => {
                 if (error) {
