@@ -32,4 +32,9 @@ export class ImagesController {
     ) file: Express.Multer.File): {Success: boolean}{
         return this._imageService.uploadFile(file)
     }
+
+    @Get('/')
+    readStream(): any{
+      return this._imageService.createReadStream()
+    }
 }
