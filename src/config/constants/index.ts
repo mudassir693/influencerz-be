@@ -1,0 +1,1 @@
+// export * as s3Options from './aws.config'
