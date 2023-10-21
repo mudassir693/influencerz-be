@@ -1,4 +1,4 @@
-import { Controller, Get, HttpException, HttpStatus, ParseFilePipeBuilder, Post, UploadedFile, UseInterceptors } from "@nestjs/common";
+import { Controller, Get, HttpException, HttpStatus, Param, ParseFilePipeBuilder, Post, Response, UploadedFile, UseInterceptors } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { Multer } from "multer";
@@ -33,8 +33,10 @@ export class ImagesController {
         return this._imageService.uploadFile(file)
     }
 
-    @Get('/')
-    readStream(): any{
-      return this._imageService.createReadStream()
+    @Get('/:key')
+    readStream(@Param() params:any, @Response() response: Express.Response): any{
+      console.log(params)
+      // return response;
+      return this._imageService.createReadStream(response, params.key)
     }
 }
