@@ -27,7 +27,7 @@ export class ImageService {
         return {Success: true}
     }
 
-    async createReadStream(response, key){
+    async createReadStream(response: any, key: string){
       
       const controller = new AbortController()
       try {
