@@ -1,8 +1,8 @@
 const s3Options = {
-    region: "ap-south-1",
+    region: process.env.AWS_REGION,
     credentials: {
-      accessKeyId: "AKIAXP7PT5D5I6GCNKXV",
-      secretAccessKey: "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"
+      accessKeyId: process.env.ACCESS_KEY_ID,
+      secretAccessKey: process.env.SECRET_ACCESS_KEY
     }
 };
 

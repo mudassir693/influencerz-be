@@ -28,49 +28,17 @@ export class ImageService {
     }
 
     async createReadStream(response, key){
-      const options = {
-        start: 11 ,  // Start position in bytes
-        end:20    // End position in bytes
-      };
-      const filePath = path.join('images', "WhatsApp-Video-test.mp4");
-      const readStream = fs.createReadStream(filePath, options);
+      
       const controller = new AbortController()
-
-      // const videoSize = await S3Client.getObjectFileSize()
-      // console.log('videoSize: ',videoSize)
       try {
 
         let length = await main.getObjectFileSize(key)
-        // console.log('main is going to call')
         response.setHeader("Accept-Ranges", "bytes");
-        // response.setHeader("Content-Range", `bytes ${start}-${end}`);
         response.setHeader("Content-Range", `bytes ${0}-${length}`);
 
-        // response.setHeader("Content-Length", contentLength);
         await pipeline(main.initiateObjectStream(key, 0, length),response,{signal: controller.signal})
-        // console.log('main called.')
       } catch (error) {
         console.log(error)
       }
-
-      // readStream.on('data', (chunk) => {
-      //   // Process the data chunk here
-      //   // You can do whatever you want with the data, e.g., write it to another file or process it in some way
-    
-      //   // Example: Output the size of each data chunk
-      //   console.log(chunk)
-      //   console.log(`Received chunk of size ${chunk.length} bytes`);
-      // });
-
-      // Listen for 'end' event
-      readStream.on('end', () => {
-        console.log('Chunk processing complete');
-      });
-
-      // Listen for 'error' event
-      readStream.on('error', (err) => {
-        console.error(`Error reading the chunk: ${err}`);
-      });
-      return "Hello for now"
     }
 }

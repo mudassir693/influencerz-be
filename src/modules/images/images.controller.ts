@@ -21,7 +21,6 @@ export class ImagesController {
             // .addFileTypeValidator({
             //     fileType: new RegExp(/image\/(jpe?g|png|gif|mp4)/i),
             //   })
-
               .build({
                 exceptionFactory(error) {
                   if (error.startsWith('Validation failed'))
@@ -35,8 +34,6 @@ export class ImagesController {
 
     @Get('/:key')
     readStream(@Param() params:any, @Response() response: Express.Response): any{
-      console.log(params)
-      // return response;
       return this._imageService.createReadStream(response, params.key)
     }
 }
