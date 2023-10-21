@@ -11,9 +11,31 @@ datasource db {
 }
 
 model image {
-  id   Int @id @default(autoincrement())
-  name  String
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @default(now()) @updatedAt
-  deletedAt  DateTime? @db.Timestamptz()  
+  id        Int       @id @default(autoincrement())
+  name      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+  deletedAt DateTime? @db.Timestamptz()
+}
+
+model user {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique
+  passowrd  String
+  avatar    String?
+  accountId Int?
+  account   account?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+  deletedAt DateTime? @db.Timestamptz()
+}
+
+model account {
+  id        Int       @id @default(autoincrement())
+  userId    Int       @unique
+  user      user      @relation(fields: [userId], references: [id])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+  deletedAt DateTime? @db.Timestamptz()
 }
