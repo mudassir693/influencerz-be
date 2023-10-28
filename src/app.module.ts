@@ -7,8 +7,8 @@ import { ImagesModule } from './modules/images/images.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/users/user.module';
 import { JwtModule } from '@nestjs/jwt';
-import { LocalStrategy } from './modules/strateges/local.strategy';
-import { JwtStrategy } from './modules/strateges/jwt.strategy';
+import { LocalStrategy } from './modules/passport/strateges/local.strategy';
+import { JwtStrategy } from './modules/passport/strateges/jwt.strategy';
 
 @Module({
   imports: [

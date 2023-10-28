@@ -33,9 +33,18 @@ model user {
 
 model account {
   id        Int       @id @default(autoincrement())
+  status    AccountStatuses  @default(PENDING)
+  intrusts  Int[]
   userId    Int       @unique
   user      user      @relation(fields: [userId], references: [id])
   createdAt DateTime  @default(now())
   updatedAt DateTime  @default(now()) @updatedAt
   deletedAt DateTime? @db.Timestamptz()
+}
+
+
+enum AccountStatuses {
+  PENDING
+  ACTIVE
+  BLOCKED
 }
