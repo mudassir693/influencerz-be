@@ -16,12 +16,17 @@ export class AuthService {
         }
 
         const hashedPassword = createHash(data.password)
-        await this._dbService.user.create({data:{
+        let createUser = await this._dbService.user.create({data:{
             name: data.name,
             email: data.email,
             password: hashedPassword
         }})
-
+        await this._dbService.account.create({
+            data:{
+                userId: createUser.id,
+                status: 'PENDING'
+            }
+        })
         return {
             success: true
         }
