@@ -36,7 +36,7 @@ export class DatabaseService extends PrismaClient implements OnModuleInit {
                 }   
                              
                 if(!params.args.where.deleted_at){
-                    params.args.where['deleted_at'] = null;
+                    params.args.where['deletedAt'] = null;
                 }
             }
             return next(params);
@@ -46,13 +46,13 @@ export class DatabaseService extends PrismaClient implements OnModuleInit {
         this.$use((params, next) => {
             if (params.action === 'update') {
                 params.action = 'updateMany';
-                params.args.where['deleted_at'] = null;
+                params.args.where['deletedAt'] = null;
             }
 
             if (params.action === 'updateMany') {
                 if (!params.args.where) params.args.where = {};
 
-                params.args.where['deleted_at'] = null;
+                params.args.where['deletedAt'] = null;
             }
             return next(params);
         });
@@ -61,14 +61,14 @@ export class DatabaseService extends PrismaClient implements OnModuleInit {
         this.$use((params, next) => {
             if (params.action === 'delete') {
                 params.action = 'update';
-                params.args['data'] = { deleted_at: new Date() };
+                params.args['data'] = { deletedAt: new Date() };
             }
             if (params.action === 'deleteMany') {
                 params.action = 'updateMany';
 
                 if (!params.args.data) params.args.data = {};
 
-                params.args.data = { deleted_at: new Date() };
+                params.args.data = { deletedAt: new Date() };
             }
             return next(params);
         });
@@ -78,8 +78,8 @@ export class DatabaseService extends PrismaClient implements OnModuleInit {
             if (params.action == 'count') {
                 if (!params.args) params.args = { where: {} };
                 if (!params.args.where) params.args = {...params.args, where: {}}
-                if (!params.args.where.deleted_at) {
-                    params.args.where['deleted_at'] = null;
+                if (!params.args.where.deletedAt) {
+                    params.args.where['deletedAt'] = null;
                 }
             }
             return next(params);
