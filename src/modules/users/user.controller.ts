@@ -8,9 +8,10 @@ import { ApplicationErrors } from "src/config/errors";
 export class UserController {
     constructor(private _userService: UserService){}
 
-    @UseGuards(JwtAuthGuard)
+    // @UseGuards(JwtAuthGuard)
     @Get('/')
     async GetUsers(@Query() data: GetUsersRequest, @Request() request){
+        console.log("this fn hit")
         return this._userService.GetUsers(data)
     }
 

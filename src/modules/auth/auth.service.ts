@@ -4,10 +4,12 @@ import { DatabaseService } from "src/database/database.service";
 import { LoginRequest, SignUpRequest } from "./dto/requets.dto";
 import { user } from "@prisma/client";
 import { JwtService } from "@nestjs/jwt";
+import { MailService } from "src/mail/mail.service";
+import { CryptoEncryption } from "src/config/helpers/crypto.helper";
 
 @Injectable()
 export class AuthService {
-    constructor(private _dbService: DatabaseService, private _jwtService: JwtService){}
+    constructor(private _dbService: DatabaseService, private _jwtService: JwtService, private _mailService: MailService){}
 
     async Signup(data: SignUpRequest): Promise<{success: boolean}>{
         const user: user = await this._dbService.user.findFirst({where:{email: data.email}})
@@ -16,12 +18,20 @@ export class AuthService {
         }
 
         const hashedPassword = createHash(data.password)
-        await this._dbService.user.create({data:{
+        let createUser = await this._dbService.user.create({data:{
             name: data.name,
             email: data.email,
             password: hashedPassword
         }})
+        let CreatedAccount = await this._dbService.account.create({
+            data:{
+                userId: createUser.id,
+                status: 'PENDING'
+            }
+        })
 
+        let Cipher = await CryptoEncryption(CreatedAccount.accountKey)
+        this._mailService.AccountConfirmationEmail(data.name, Cipher)
         return {
             success: true
         }

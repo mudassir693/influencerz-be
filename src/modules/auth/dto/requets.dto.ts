@@ -1,7 +1,7 @@
-import { IsEmail, IsAlpha, Min, IsNotEmpty } from "class-validator";
+import { IsEmail, IsAlpha, Min, IsNotEmpty, IsAlphanumeric } from "class-validator";
 
 export class SignUpRequest {
-    @IsAlpha()
+    @IsNotEmpty()
     @IsNotEmpty()
     name: string
 
