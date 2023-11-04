@@ -10,6 +10,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { LocalStrategy } from './modules/passport/strateges/local.strategy';
 import { JwtStrategy } from './modules/passport/strateges/jwt.strategy';
 import {MailModule} from './mail/mail.module'
+import { AccountModule } from './modules/account/account.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import {MailModule} from './mail/mail.module'
     ImagesModule,
     AuthModule,
     UserModule,
+    AccountModule,
     MailModule,
     JwtModule.register({
       global:true,

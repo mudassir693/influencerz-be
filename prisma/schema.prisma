@@ -37,6 +37,7 @@ model account {
   intrusts  Int[]
   userId    Int       @unique
   user      user      @relation(fields: [userId], references: [id])
+  accountKey String?   @default(uuid()) @db.Uuid
   createdAt DateTime  @default(now())
   updatedAt DateTime  @default(now()) @updatedAt
   deletedAt DateTime? @db.Timestamptz()

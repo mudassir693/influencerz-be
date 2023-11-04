@@ -5,6 +5,7 @@ import { LoginRequest, SignUpRequest } from "./dto/requets.dto";
 import { user } from "@prisma/client";
 import { JwtService } from "@nestjs/jwt";
 import { MailService } from "src/mail/mail.service";
+import { CryptoEncryption } from "src/config/helpers/crypto.helper";
 
 @Injectable()
 export class AuthService {
@@ -22,13 +23,15 @@ export class AuthService {
             email: data.email,
             password: hashedPassword
         }})
-        await this._dbService.account.create({
+        let CreatedAccount = await this._dbService.account.create({
             data:{
                 userId: createUser.id,
                 status: 'PENDING'
             }
         })
-        this._mailService.AccountConfirmationEmail(data.name, "hereIsTokenForNow")
+
+        let Cipher = await CryptoEncryption(CreatedAccount.accountKey)
+        this._mailService.AccountConfirmationEmail(data.name, Cipher)
         return {
             success: true
         }
