@@ -4,10 +4,11 @@ import { DatabaseService } from "src/database/database.service";
 import { LoginRequest, SignUpRequest } from "./dto/requets.dto";
 import { user } from "@prisma/client";
 import { JwtService } from "@nestjs/jwt";
+import { MailService } from "src/mail/mail.service";
 
 @Injectable()
 export class AuthService {
-    constructor(private _dbService: DatabaseService, private _jwtService: JwtService){}
+    constructor(private _dbService: DatabaseService, private _jwtService: JwtService, private _mailService: MailService){}
 
     async Signup(data: SignUpRequest): Promise<{success: boolean}>{
         const user: user = await this._dbService.user.findFirst({where:{email: data.email}})
@@ -27,6 +28,7 @@ export class AuthService {
                 status: 'PENDING'
             }
         })
+        this._mailService.AccountConfirmationEmail(data.name, "hereIsTokenForNow")
         return {
             success: true
         }

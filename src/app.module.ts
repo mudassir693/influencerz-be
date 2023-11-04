@@ -9,6 +9,7 @@ import { UserModule } from './modules/users/user.module';
 import { JwtModule } from '@nestjs/jwt';
 import { LocalStrategy } from './modules/passport/strateges/local.strategy';
 import { JwtStrategy } from './modules/passport/strateges/jwt.strategy';
+import {MailModule} from './mail/mail.module'
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { JwtStrategy } from './modules/passport/strateges/jwt.strategy';
     ImagesModule,
     AuthModule,
     UserModule,
+    MailModule,
     JwtModule.register({
       global:true,
       secret: process.env.JWT_SECRET,

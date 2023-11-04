@@ -4,8 +4,10 @@ import { AuthService } from './auth.service';
 import { DatabaseModule } from 'src/database/database.module';
 import { UserModule } from '../users/user.module';
 import { PassportModule } from '@nestjs/passport';
+import { MailModule } from 'src/mail/mail.module';
 @Module({
   imports: [
+    MailModule,
     DatabaseModule,
     UserModule,
     PassportModule
