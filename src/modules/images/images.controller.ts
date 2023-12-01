@@ -1,4 +1,4 @@
-import { Controller, Get, HttpException, HttpStatus, Param, ParseFilePipeBuilder, Post, Response, UploadedFile, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Get, HttpException, HttpStatus, Param, ParseFilePipeBuilder, Post, Response, UploadedFile, UseInterceptors } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { Multer } from "multer";
@@ -35,5 +35,13 @@ export class ImagesController {
     @Get('/:key')
     readStream(@Param() params:any, @Response() response: Express.Response): any{
       return this._imageService.createReadStream(response, params.key)
+    }
+    
+    @Post('/test')
+    CheckLambdaTrigger(@Body() data: any){
+      console.log('data: ',data)
+      return {
+        message: "connection access successfully."
+      }
     }
 }
