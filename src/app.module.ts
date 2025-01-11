@@ -30,3 +30,22 @@ import { AccountModule } from './modules/account/account.module';
   providers: [AppService, LocalStrategy, JwtStrategy],
 })
 export class AppModule {}
+
+
+// @Module({
+//   imports: [
+//     ConfigModule.forRoot({ isGlobal: true }),
+//     ImagesModule,
+//     AuthModule,
+//     UserModule,
+//     AccountModule,
+//     MailModule,
+//     JwtModule.register({
+//       global:true,
+//       secret: process.env.JWT_SECRET,
+//       signOptions: { expiresIn: '30d' },
+//     }),
+//   ],
+//   controllers: [AppController],
+//   providers: [AppService, LocalStrategy, JwtStrategy],
+// })
