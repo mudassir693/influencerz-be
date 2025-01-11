@@ -1,97 +1,110 @@
-
 import { S3 } from "@aws-sdk/client-s3";
 import s3Options from "../constants/aws.config";
 
+// S3 client instance
+const s3Client = new S3(s3Options);
 
-// const s3Client = new S3Client({});
-// // const oneMB = 1024 * (1024/100);
-// const oneMB = 1024*120;
+// Constants
+const ONE_MB = 1024 * 120; // Approximate size in bytes
 
-// export const getObjectRange = ({ bucket, key, start, end }) => {
-//   const command = new GetObjectCommand({
-//     Bucket: bucket,
-//     Key: key,
-//     Range: `bytes=${start}-${end}`,
-//   });
+const getObjectRange = async ({ bucket, key, start, end }) => {
+  const range = `bytes=${start}-${end}`;
+  const command = await s3Client.getObject({
+    Bucket: bucket,
+    Key: key,
+    Range: range,
+  });
 
-//   return s3Client.send(command);
-// };
+  return command;
+};
 
-// export const getRangeAndLength = (contentRange) => {
-//   const [range, length] = contentRange.split("/");
-//   const [start, end] = range.split("-");
-//   return {
-//     start: parseInt(start),
-//     end: parseInt(end),
-//     length: parseInt(length),
-//   };
-// };
+const parseContentRange = (contentRange) => {
+  const [range, length] = contentRange.split("/");
+  const [start, end] = range.split("-");
+  return {
+    start: parseInt(start, 10),
+    end: parseInt(end, 10),
+    length: parseInt(length, 10),
+  };
+};
 
-// export const isComplete = ({ end, length }) => end === length - 1;
-// const downloadInChunks = async ({ bucket, key }) => {
-//   const writeStream = createWriteStream(`./images/${key}`
-//   ).on("error", (err) => console.error(err));
+// const isDownloadComplete = ({ end, length }) => end === length - 1;
+const IsDownloadComplete = ({ end, length }) => end === length - 1;
 
-//   let rangeAndLength = { start: -1, end: -1, length: -1 };
-//   let i = 1;
-//   while (!isComplete(rangeAndLength)) {
-//     const { end } = rangeAndLength;
-//     const nextRange = { start: end+1, end: end + oneMB };
+const downloadInChunks = async ({ bucket, key }) => {
+  const writeStream = createWriteStream(`./images/${key}`).on("error", (err) => console.error(err));
 
-//     console.log(`Downloading bytes ${nextRange.start} to ${nextRange.end}`);
+  let rangeAndLength = { start: -1, end: -1, length: -1 };
+  let i = 1;
+  while (!isDownloadComplete(rangeAndLength)) {
+    const { end } = rangeAndLength;
+    const nextRange = { start: end + 1, end: end + ONE_MB };
 
-//     const { ContentRange, Body } = await getObjectRange({
-//       bucket,
-//       key,
-//       ...nextRange,
-//     });
+    console.log(`Downloading bytes ${nextRange.start} to ${nextRange.end}`);
 
-//     let resp = await Body.transformToByteArray()
-//     console.log(resp)
-//     var str = String.fromCharCode.apply(null, resp);
-//     let buffer = Buffer.from(str,'binary')
-//     // return buffer
-//     writeStream.write(resp);
-//     rangeAndLength = getRangeAndLength(ContentRange);
-//     i++
-//     pipeline
-//   }
-// };
+    const { ContentRange, Body } = await getObjectRange({
+      bucket,
+      key,
+      ...nextRange,
+    });
 
+    const byteArray = await Body.transformToByteArray();
+    console.log(byteArray);
+    
+    const buffer = Buffer.from(byteArray, "binary");
 
-// export const main = async () => {
-//   return await downloadInChunks({
-//     bucket: process.env.BUCKET,
-//     key: "WhatsApp-Video-test.mp4",
-//   });
-// };
-
-
+    writeStream.write(buffer);
+    rangeAndLength = parseContentRange(ContentRange);
+    i++;
+  }
+};
 
 export default {
   _client: new S3(s3Options),
   _bucket: process.env.BUCKET,
 
-  async getObjectFileSize(key: string) {
+  async getObjectFileSize(key) {
     const { ContentLength } = await this._client.headObject({
       Key: key,
       Bucket: this._bucket,
     });
-    console.log(ContentLength)
-    return ContentLength
+    console.log(ContentLength);
+    return ContentLength;
   },
 
-  async * initiateObjectStream(key: string, start: number, end: number) {
-    const streamRange = `bytes=${start}-${end}`
-
+  async *initiateObjectStream(key, start, end) {
+    const range = `bytes=${start}-${end}`;
     const { Body: chunks } = await this._client.getObject({
       Key: key,
       Bucket: this._bucket,
-      Range: streamRange
-    })
+      Range: range,
+    });
+
+    // Yield each chunk of the object
     for await (const chunk of chunks) {
       yield chunk;
     }
+  },
+
+  async initiateDownload({ bucket, key }) {
+    const fileSize = await this.getObjectFileSize(key);
+    let start = 0;
+    let end = ONE_MB;
+
+    while (start < fileSize) {
+      console.log(`Initiating download: bytes ${start}-${end}`);
+
+      // Download next chunk
+      const stream = this.initiateObjectStream(key, start, end);
+
+      // This can be used to consume the stream and save to a file
+      for await (const chunk of stream) {
+        // Process chunk (you can save to a file or handle the chunk here)
+        console.log(`Downloaded chunk from ${start} to ${end}`);
+      }
+
+      start = end + 1;
+      end = Math.min(end + ONE_MB, fileSize); // Ensure we don't exceed the file size
+    }
   }
 }
-
