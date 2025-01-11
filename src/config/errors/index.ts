@@ -3,5 +3,4 @@ export const ApplicationErrors = {
     NOT_FOUND: "entity not found",
     ACCOUNT_NOT_FOUND: "account not found",
     ACCOUNT_NOT_FOUND_2: "account not found",
-    
 }
